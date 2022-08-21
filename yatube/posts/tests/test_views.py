@@ -28,21 +28,21 @@ class PostsPages(TestCase):
         cls.authorized_client.force_login(cls.user)
 
     def test_template(self):
-            templates_pages_names = {
-                reverse('posts:first'): 'posts/index.html',
-                reverse('posts:second', kwargs={
-                    'slug': 'test-slug'}): 'posts/group_list.html',
-                reverse('posts:profile', kwargs={
-                    'username': 'auth'}): 'posts/profile.html',
-                reverse('posts:post_detail', kwargs={
-                    'post_id': 1}): 'posts/post_detail.html',
-                reverse('posts:post_create'): 'posts/create_post.html',
-            }
-            for reverse_name, template in templates_pages_names.items():
-                with self.subTest(reverse_name=reverse_name):
-                    response = self.authorized_client.get(reverse_name)
-                    self.assertTemplateUsed(response, template)
-        
+        templates_pages_names = {
+            reverse('posts:first'): 'posts/index.html',
+            reverse('posts:second', kwargs={
+                'slug': 'test-slug'}): 'posts/group_list.html',
+            reverse('posts:profile', kwargs={
+                'username': 'auth'}): 'posts/profile.html',
+            reverse('posts:post_detail', kwargs={
+                'post_id': 1}): 'posts/post_detail.html',
+            reverse('posts:post_create'): 'posts/create_post.html',
+        }
+        for reverse_name, template in templates_pages_names.items():
+            with self.subTest(reverse_name=reverse_name):
+                response = self.authorized_client.get(reverse_name)
+                self.assertTemplateUsed(response, template)
+
     def test_index_context(self):
         response = self.authorized_client.get(reverse('posts:first'))
         first_object = response.context['page_obj'][0]
@@ -67,7 +67,7 @@ class PostsPages(TestCase):
         self.check_post_context(first_object)
 
     def test_post_create(self):
-        response =  self.authorized_client.get(reverse(
+        response = self.authorized_client.get(reverse(
             'posts:post_create'))
         form = {
             'text': forms.fields.CharField,
@@ -87,7 +87,8 @@ class PostsPages(TestCase):
         }
         for parameter_1, parameter_2 in form.items():
             with self.subTest(parameter_1=parameter_1):
-                form_field = response.context.get('form').fields.get(parameter_1)
+                form_field = (response.context.get('form').fields.get(
+                    parameter_1))
                 self.assertIsInstance(form_field, parameter_2)
 
     def check_post_context(self, post):
