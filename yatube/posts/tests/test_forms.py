@@ -40,7 +40,7 @@ class TestCreateForm(TestCase):
 
     def test_edit_post(self):
         self.existing_post = Post.objects.create(
-            text='Тестовый пост', 
+            text='Тестовый пост',
             author=TestCreateForm.user,)
         post_count = Post.objects.count()
         form_data = {

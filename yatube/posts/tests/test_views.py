@@ -21,33 +21,27 @@ class PostsPages(TestCase):
         Post.objects.create(
             author=cls.user,
             text='Тестовый пост',
-            group = cls.group,
+            group=cls.group,
         )
         cls.guest_client = Client()
         cls.authorized_client = Client()
         cls.authorized_client.force_login(cls.user)
 
     def test_template(self):
-        teplate_pages = {
-            'posts/index.html': reverse('posts:first'),
-            'posts/group_list.html': (
-                reverse('posts:second', kwargs={'slug':'test-slug'})
-            ),
-            'posts/profile.html': (
-                reverse('posts:profile', kwargs={'username':'auth'})
-            ),
-            'posts/post_detail.html': (
-                reverse('posts:post_detail', kwargs={'post_id':'1'})
-            ),
-            'posts/create_post.html': (reverse('posts:post_create')),
-            'posts/create_post.html': (
-                reverse('posts:post_edit', kwargs={'post_id':'1'})
-            )
-        }
-        for template, names in teplate_pages.items():
-            with self.subTest(names=names):
-                response = self.authorized_client.get(names)
-                self.assertTemplateUsed(response, template)
+            templates_pages_names = {
+                reverse('posts:first'): 'posts/index.html',
+                reverse('posts:second', kwargs={
+                    'slug': 'test-slug'}): 'posts/group_list.html',
+                reverse('posts:profile', kwargs={
+                    'username': 'auth'}): 'posts/profile.html',
+                reverse('posts:post_detail', kwargs={
+                    'post_id': 1}): 'posts/post_detail.html',
+                reverse('posts:post_create'): 'posts/create_post.html',
+            }
+            for reverse_name, template in templates_pages_names.items():
+                with self.subTest(reverse_name=reverse_name):
+                    response = self.authorized_client.get(reverse_name)
+                    self.assertTemplateUsed(response, template)
         
     def test_index_context(self):
         response = self.authorized_client.get(reverse('posts:first'))

@@ -1,4 +1,3 @@
-from tokenize import group
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 
@@ -22,12 +21,10 @@ class PostModelTest(TestCase):
             text='Тестовый пост',
         )
 
-
     def test_models_group(self):
         group = PostModelTest.group
         expected_object_name = group.title
         self.assertEqual(expected_object_name, str(group))
-
 
     def test_models_post(self):
         post = PostModelTest.post
