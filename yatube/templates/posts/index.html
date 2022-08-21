@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}
+  Все записи
+{% endblock %}
+{% block content %}
+  <div class="container py-5"> 
+    <h1>
+      Все записи Лео
+    </h1>
+    {% for post in page_obj %}
+      {% include 'includes/content.html' %}
+    {% endfor %}
+    {% include 'posts/includes/paginator.html' %}
+  </div>  
+{% endblock %}
