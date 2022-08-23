@@ -27,7 +27,8 @@ class PostsPages(TestCase):
         cls.authorized_client = Client()
         cls.authorized_client.force_login(cls.user)
 
-    def test_template(self):
+    def test_template_auth(self):
+        """URL используют соответствующие шаблоны для авторзиванного."""
         templates_pages_names = {
             reverse('posts:first'): 'posts/index.html',
             reverse('posts:second', kwargs={
@@ -43,30 +44,51 @@ class PostsPages(TestCase):
                 response = self.authorized_client.get(reverse_name)
                 self.assertTemplateUsed(response, template)
 
+    def test_template_guest_client(self):
+        """URL используют соответствующие шаблоны для гостя."""
+        templates_pages_names = {
+            reverse('posts:first'): 'posts/index.html',
+            reverse('posts:second', kwargs={
+                'slug': 'test-slug'}): 'posts/group_list.html',
+            reverse('posts:profile', kwargs={
+                'username': 'auth'}): 'posts/profile.html',
+            reverse('posts:post_detail', kwargs={
+                'post_id': 1}): 'posts/post_detail.html'
+        }
+        for reverse_name, template in templates_pages_names.items():
+            with self.subTest(reverse_name=reverse_name):
+                response = self.guest_client.get(reverse_name)
+                self.assertTemplateUsed(response, template)
+
     def test_index_context(self):
+        """Шаблон index сформирован с правильным контекстом."""
         response = self.authorized_client.get(reverse('posts:first'))
         first_object = response.context['page_obj'][0]
         self.check_post_context(first_object)
 
     def test_group_context(self):
+        """Шаблон group_list сформирован с правильным контекстом."""
         response = self.authorized_client.get(reverse(
             'posts:second', kwargs={'slug': 'test-slug'}))
         first_object = response.context['page_obj'][0]
         self.check_post_context(first_object)
 
     def test_profile_context(self):
+        """Шаблон profile сформирован с правильным контекстом."""
         response = self.authorized_client.get(reverse(
             'posts:profile', kwargs={'username': 'auth'}))
         first_object = response.context['page_obj'][0]
         self.check_post_context(first_object)
 
     def test_post_detail(self):
+        """Шаблон post_detail сформирован с правильным контекстом."""
         response = self.authorized_client.get(reverse(
             'posts:post_detail', kwargs={'post_id': 1}))
         first_object = response.context['post']
         self.check_post_context(first_object)
 
     def test_post_create(self):
+        """Шаблон post_create сформирован с правильным контекстом."""
         response = self.authorized_client.get(reverse(
             'posts:post_create'))
         form = {
@@ -79,6 +101,7 @@ class PostsPages(TestCase):
                 self.assertIsInstance(form_field, parameter_2)
 
     def test_edit_page_show_correct_context(self):
+        """Шаблон post_edit сформирован с правильным контекстом."""
         response = self.authorized_client.get(reverse(
             'posts:post_edit', kwargs={'post_id': 1}))
         form = {
@@ -98,6 +121,7 @@ class PostsPages(TestCase):
         self.assertEqual(post.group, PostsPages.group)
 
     def test_post_is_not_in_group(self):
+        """Созданный пост не относится к группе 1."""
         self.second_group = Group.objects.create(
             title='Тестовая группа 2',
             slug='test-slug-2',
@@ -111,6 +135,7 @@ class PostsPages(TestCase):
 
 
 class PaginatorTest(TestCase):
+    """Тестируем пагинатор."""
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
@@ -132,6 +157,7 @@ class PaginatorTest(TestCase):
         self.authorized_client.force_login(PaginatorTest.user)
 
     def test_paginator_one_list(self):
+        """На первой странице десять постов."""
         template_pages_name = {
             reverse('posts:first'): 'page_obj',
             reverse('posts:second', kwargs={
@@ -143,6 +169,7 @@ class PaginatorTest(TestCase):
                 self.assertEqual(len(response.context[context]), 10)
 
     def test_paginator_second_list(self):
+        """На второй странице четыре поста."""
         template_pages_name = {
             reverse('posts:first'): 'page_obj',
             reverse('posts:second', kwargs={

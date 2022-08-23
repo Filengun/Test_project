@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'y8bw*m=!cs#xdt0bfer@gq!i9*w1#t68=1nkq)sqi1+^zhhi0^'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG=False
 
 ALLOWED_HOSTS = [
     'localhost',
@@ -31,6 +31,8 @@ ALLOWED_HOSTS = [
     '[::1]',
     'testserver',
 ]
+
+CSRF_FAILURE_VIEW = 'core.views.csrf_failure'
 
 
 # Application definition
@@ -46,6 +48,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'sorl.thumbnail'
 ]
 
 MIDDLEWARE = [
