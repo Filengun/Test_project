@@ -37,7 +37,7 @@ class StaticURLTests(TestCase):
                 response = self.guest_client.get(i)
                 self.assertEqual(
                     response.status_code,
-                    HTTPStatus.OK,"Ок со статусом у гостя"
+                    HTTPStatus.OK, "Ок со статусом у гостя"
                 )
 
     def test_status_guest_client(self):
