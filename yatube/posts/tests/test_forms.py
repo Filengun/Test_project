@@ -96,5 +96,7 @@ class TestCreateForm(TestCase):
                 'posts:post_edit', kwargs={'post_id': self.existing_post.id}),
             data=form_data
         )
-        self.assertRedirects(response,
-            f'/auth/login/?next=/posts/{self.existing_post.id}/edit/')
+        self.assertRedirects(
+            response,
+            f'/auth/login/?next=/posts/{self.existing_post.id}/edit/'
+        )

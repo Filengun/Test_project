@@ -35,16 +35,20 @@ class StaticURLTests(TestCase):
         for i in StaticURLTests.temp_url:
             with self.subTest():
                 response = self.guest_client.get(i)
-                self.assertEqual(response.status_code, HTTPStatus.OK,
-                    "Ок со статусом у гостя")
+                self.assertEqual(
+                    response.status_code,
+                    HTTPStatus.OK,"Ок со статусом у гостя"
+                )
 
     def test_status_guest_client(self):
         """Страницы доступные авторизованному пользователю."""
         for i in StaticURLTests.temp_url:
             with self.subTest():
                 response = self.guest_client.get(i)
-                self.assertEqual(response.status_code, HTTPStatus.OK,
-                    "Ок со статусом у авториз")
+                self.assertEqual(
+                    response.status_code,
+                    HTTPStatus.OK, "Ок со статусом у авториз"
+                )
 
     def test_na_status_auth(self):
         """Страница /create/ доступна авторизованному пользователю."""
