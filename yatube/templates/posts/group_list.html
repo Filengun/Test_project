@@ -6,7 +6,6 @@
     <p> {{ group.description }} </p>
     {% for post in posts %}
       {% include 'includes/content.html' %}    
-      {% if not forloop.last %}<hr>{% endif %}
     {% endfor %}
     {% include 'posts/includes/paginator.html' %}
   </div>  

@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from django.test import TestCase, Client
 from http import HTTPStatus
 from posts.models import Post, Group
+from django.urls import reverse
 
 User = get_user_model()
 
@@ -23,21 +24,24 @@ class StaticURLTests(TestCase):
         cls.guest_client = Client()
         cls.authorized_client = Client()
         cls.authorized_client.force_login(cls.user)
-        cls.temp_url = [
-            '/',
-            '/group/test-slug/',
-            '/profile/Test_auth/',
-            '/posts/1/'
-        ]
+        cls.temp_url = {
+            reverse('posts:index'): 'posts/index.html',
+            reverse('posts:second', kwargs={'slug': 'test-slug'}):
+                'posts/group_list.html',
+            reverse(
+                'posts:post_detail', kwargs={'post_id': StaticURLTests.post.id}):
+                'posts/post_detail.html',
+        }
 
     def test_status_auth(self):
         """Страница доступные гостю."""
         for i in StaticURLTests.temp_url:
-            with self.subTest():
+            with self.subTest(i=i):
                 response = self.guest_client.get(i)
                 self.assertEqual(
                     response.status_code,
-                    HTTPStatus.OK, "Ок со статусом у гостя"
+                    HTTPStatus.OK, 
+                    f"Не ок со статусом у гостя {i}"
                 )
 
     def test_status_guest_client(self):
